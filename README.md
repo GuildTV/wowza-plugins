@@ -4,6 +4,7 @@ This is a simple plugin for wowza, to provide a simple yet effective method of a
 It works by the viewer passes a key to wowza, which makes a web request to verify its validity. It works best when the keys are one time use only.
 
 To use the plugin, it must be built using the Wowza IDE, and installed, then Wowza needs to be configured to use it.
+Instead of compiling, the jar file can just be placed into the [install dir]/lib/ folder.
 
 Once the server is setup for streaming, and it has been verified to stream successfully, we can configure it for this plugin.
 
