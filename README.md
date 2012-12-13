@@ -8,23 +8,28 @@ To use the plugin, it must be built using the Wowza IDE, and installed, then Wow
 Once the server is setup for streaming, and it has been verified to stream successfully, we can configure it for this plugin.
 
 In the Application.xml config file for our stream, we start by adding this module to the end of the Modules list.
-    <Module>
-        <Name>RTMPKeyAuthentication</Name>
-        <Description>RTMP Authentication with keys</Description>
-        <Class>guildtv.RTMPKeyAuthentication</Class>
-    </Module>
+<pre>
+    &lt;Module&gt;
+        &lt;Name&gt;RTMPKeyAuthentication&lt;/Name&gt;
+        &lt;Description&gt;RTMP Authentication with keys&lt;/Description&gt;
+        &lt;Class&gt;guildtv.RTMPKeyAuthentication&lt;/Class&gt;
+    &lt;/Module&gt;
+</pre>
 
 Next we add this Property to the Properties list, but change the value to be the location of the script which will validate the keys.
-    <Property>
-        <Name>authScript</Name>
-        <Value>http://live.guildtv.co.uk/auth.php</Value>
-    </Property>
+<pre>
+    &lt;Property&gt;
+        &lt;Name&gt;authScript&lt;/Name&gt;
+        &lt;Value&gt;http://live.guildtv.co.uk/auth.php&lt;/Value&gt;
+    &lt;/Property&gt;
+</pre>
 
 Using the sample auth.php file, create a script that will return true or false depending on the validity of the key and associated ip address.
 
 Use the watch.php as a sample script to generate and store keys.
 
 Finally we need to create a table in a database to store the keys.
+<pre>
     CREATE TABLE `keys` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
       `key` varchar(50) NOT NULL,
@@ -32,3 +37,4 @@ Finally we need to create a table in a database to store the keys.
       PRIMARY KEY (`id`),
       UNIQUE KEY `key` (`key`)
     );
+</pre>
