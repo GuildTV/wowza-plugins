@@ -19,7 +19,7 @@ mysql_query("INSERT INTO `keys` (`key`,`ip`) VALUES ('".$key."','".$_SERVER['REM
 	<div id="myElement">Loading the player...</div>
 	<script type="text/javascript">
 	    jwplayer("myElement").setup({
-	        file: "rtmp://127.0.0.1:1935/live/myStream?<?php print $key; ?>",
+	        file: "rtmp://127.0.0.1:1935/live/<?php print $key; ?>",
 	    });
 	</script>
 </body>
