@@ -23,6 +23,10 @@ Next we add these Properties to the Properties list, but change the values to su
         &lt;Value&gt;http://live.guildtv.co.uk/stats/stat.php&lt;/Value&gt;
     &lt;/Property&gt;
     &lt;Property&gt;
+        &lt;Name&gt;logScript&lt;/Name&gt;
+        &lt;Value&gt;http://live.guildtv.co.uk/stats/log.php&lt;/Value&gt;
+    &lt;/Property&gt;
+    &lt;Property&gt;
         &lt;Name&gt;streamName&lt;/Name&gt;
         &lt;Value&gt;myStream&lt;/Value&gt;
     &lt;/Property&gt;

@@ -14,12 +14,14 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 
 	private String destination;
 	private String script;
+	private String logScript;
 	private String referer;
 	private String pageLoc;
 
 	public void onAppStart(IApplicationInstance appInstance) {
 
 		script = appInstance.getProperties().getPropertyStr("script");
+		logScript = appInstance.getProperties().getPropertyStr("logScript");
 		destination = appInstance.getProperties().getPropertyStr("streamName");
 		referer = appInstance.getProperties().getPropertyStr("referer");
 		pageLoc = appInstance.getProperties().getPropertyStr("pageURL");
@@ -35,6 +37,11 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 
 		if (shibId == null) {
 			getLogger().info("No shibId for client " + client.getIp());
+			String error = "ip=" + client.getIp();
+			error += "&wowzaId=" + client.getClientId();
+			error += "&uri=" + client.getUri();
+			error += "&error=noShib";
+			log(error);
 			return null;
 		}
 
@@ -43,6 +50,15 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 			getLogger().info(
 					"Rejected Client Key From " + client.getIp() + " (Referrer: " + client.getReferrer() + " "
 							+ client.getPageUrl() + " )");
+			
+			String error = "shibId=" + shibId;
+			error += "&ip=" + client.getIp();
+			error += "&wowzaId=" + client.getClientId();
+			error += "&uri=" + client.getUri();
+			error += "&referer=" + client.getReferrer();
+			error += "&location=" + client.getPageUrl();
+			error += "&error=referer";
+			log(error);
 			return null;
 		}
 
@@ -64,6 +80,12 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 			} else {
 				// reject client
 				getLogger().info("Rejected Client Key From " + client.getIp());
+				String error = "shibId=" + shibId;
+				error += "&ip=" + client.getIp();
+				error += "&wowzaId=" + client.getClientId();
+				error += "&uri=" + client.getUri();
+				error += "&error=invalidKey";
+				log(error);
 				return null;
 			}
 
@@ -72,6 +94,16 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 		}
 
 		return null;
+	}
+	
+	private void log(String query){
+		try {
+			// get key validity from the web server
+			HTTPUtils.HTTPRequestToByteArray(logScript, "POST", query, null);
+
+		} catch (Exception e) {
+			getLogger().info("Failed to write to log");
+		}
 	}
 
 	public void onDisconnect(IClient client) {
