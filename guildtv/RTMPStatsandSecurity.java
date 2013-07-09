@@ -15,23 +15,19 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 	private String destination;
 	private String script;
 	private String logScript;
-	private String referer;
-	private String pageLoc;
 
 	public void onAppStart(IApplicationInstance appInstance) {
 
 		script = appInstance.getProperties().getPropertyStr("script");
 		logScript = appInstance.getProperties().getPropertyStr("logScript");
 		destination = appInstance.getProperties().getPropertyStr("streamName");
-		referer = appInstance.getProperties().getPropertyStr("referer");
-		pageLoc = appInstance.getProperties().getPropertyStr("pageURL");
 
 		appInstance.setStreamNameAliasProvider(this);
 
 	}
 
 	public String resolvePlayAlias(IApplicationInstance appInstance, String shibId, IClient client) {
-		getLogger().info("Log connect");
+		getLogger().info("My Log connect");
 
 		// get the key from the flash player
 
@@ -39,25 +35,7 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 			getLogger().info("No shibId for client " + client.getIp());
 			String error = "ip=" + client.getIp();
 			error += "&wowzaId=" + client.getClientId();
-			error += "&uri=" + client.getUri();
 			error += "&error=noShib";
-			log(error);
-			return null;
-		}
-
-		if (!(client.getReferrer().equals(referer) && client.getPageUrl().startsWith(pageLoc))) {
-			// reject client
-			getLogger().info(
-					"Rejected Client Key From " + client.getIp() + " (Referrer: " + client.getReferrer() + " "
-							+ client.getPageUrl() + " )");
-			
-			String error = "shibId=" + shibId;
-			error += "&ip=" + client.getIp();
-			error += "&wowzaId=" + client.getClientId();
-			error += "&uri=" + client.getUri();
-			error += "&referer=" + client.getReferrer();
-			error += "&location=" + client.getPageUrl();
-			error += "&error=referer";
 			log(error);
 			return null;
 		}
@@ -65,7 +43,6 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 		String query = "shibId=" + shibId;
 		query += "&ip=" + client.getIp();
 		query += "&wowzaId=" + client.getClientId();
-		query += "&uri=" + client.getUri();
 		query += "&action=connect";
 
 		try {
@@ -83,7 +60,6 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 				String error = "shibId=" + shibId;
 				error += "&ip=" + client.getIp();
 				error += "&wowzaId=" + client.getClientId();
-				error += "&uri=" + client.getUri();
 				error += "&error=invalidKey";
 				log(error);
 				return null;
@@ -95,8 +71,8 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 
 		return null;
 	}
-	
-	private void log(String query){
+
+	private void log(String query) {
 		try {
 			// get key validity from the web server
 			HTTPUtils.HTTPRequestToByteArray(logScript, "POST", query, null);
@@ -107,16 +83,16 @@ public class RTMPStatsandSecurity extends ModuleBase implements IMediaStreamName
 	}
 
 	public void onDisconnect(IClient client) {
-		getLogger().info("Log disconnect");
+		getLogger().info("My Log disconnect");
 
 		String query = "ip=" + client.getIp();
 		query += "&wowzaId=" + client.getClientId();
-		query += "&uri=" + client.getUri();
 		query += "&action=disconnect";
 
 		try {
 			// get key validity from the web server
 			HTTPUtils.HTTPRequestToByteArray(script, "POST", query, null);
+			getLogger().info("Logged Disconnect");
 
 		} catch (Exception e) {
 			getLogger().info("Failed to log client " + client.getIp() + " (" + client.getClientId() + ")");
